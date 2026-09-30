@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>Subtitle-Remover</Name>
+  <Repository>local/subtitle-remover-gui:latest</Repository>
+  <Registry/>
+  <Network>bridge</Network>
+  <MyIP/>
+  <MyMAC/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support/>
+  <Project/>
+  <ReadMe/>
+  <Overview>Container met FFmpeg en Python WebGUI om ingebakken ondertiteling uit media te strippen zonder re-encoding.</Overview>
+  <Category>MediaApp:Video</Category>
+  <WebUI>http://[IP]:[PORT:5000]/</WebUI>
+  <TemplateURL/>
+  <Icon>http://192.168.178.88:5000/static/logo.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled>1790739604</DateInstalled>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+  <Config Name="Media Map" Target="/media" Default="/mnt/user/media/" Mode="rw" Description="De hoofdmap waar je films of series staan." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/media/</Config>
+  <Config Name="WebUI Port" Target="5000" Default="5000" Mode="tcp" Description="Poort voor de webinterface" Type="Port" Display="always" Required="true" Mask="false">5050</Config>
+  <TailscaleStateDir/>
+</Container>
