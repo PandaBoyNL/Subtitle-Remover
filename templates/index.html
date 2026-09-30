@@ -1,87 +1,180 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
-    <title>SUB-GONE: Subtitle Remover</title>
+    <title>SUB-GONE</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
     <style>
         body { background-color: #1e1e1e; color: #fff; font-family: Arial, sans-serif; padding: 20px; }
         .header { text-align: center; margin-bottom: 20px; }
         .header img { max-width: 250px; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        
         input, button { padding: 10px; margin-top: 10px; border-radius: 5px; border: none; font-size: 14px; }
-        input { width: 300px; }
+        input[type="text"] { width: 300px; }
+        
         .btn-start { background-color: #007bff; color: white; cursor: pointer; font-weight: bold; }
         .btn-start:hover { background-color: #0056b3; }
         .btn-stop { background-color: #dc3545; color: white; cursor: pointer; font-weight: bold; display: none; }
         .btn-stop:hover { background-color: #c82333; }
+        
+        /* Contact Knop Styling */
+        .btn-contact { background-color: #17a2b8; color: white; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
+        .btn-contact:hover { background-color: #138496; }
+        
+        /* Donatie Knop Styling */
+        .btn-donate { background-color: #ffc107; color: #212529; cursor: pointer; font-weight: bold; margin-bottom: 10px; margin-left: 10px; text-decoration: none; display: inline-block; padding: 10px 15px; border-radius: 5px; }
+        .btn-donate:hover { background-color: #e0a800; color: #111; }
+        
+        .contact-box { background: #2a2a2a; padding: 20px; border-radius: 8px; border: 1px solid #444; max-width: 500px; margin: 0 auto 20px auto; display: none; text-align: left; }
+        .contact-box input, .contact-box textarea { width: 100%; box-sizing: border-box; background: #333; color: white; border: 1px solid #555; padding: 10px; margin-bottom: 10px; border-radius: 4px; font-family: inherit;}
+        
         pre { background: #333; padding: 15px; border-radius: 5px; overflow-y: auto; max-height: 500px; min-height: 100px; white-space: pre-wrap; }
     </style>
 </head>
 <body>
     <div class="header">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="SUB-GONE Logo">
-        <h2>SUB-GONE: Ingebakken Ondertiteling Verwijderen</h2>
+        <h2>{{ t.title }}</h2>
+        
+        <!-- Knoppen Sectie -->
+        <div style="margin-bottom: 15px;">
+            <button type="button" id="openContactBtn" class="btn-contact">{{ t.contact_btn }}</button>
+            <a href="https://www.paypal.com/paypalme/PandaBoyNL" target="_blank" class="btn-donate">👉 Buy me a coffee ☕</a>
+        </div>
+        
+        <div id="contactModal" class="contact-box">
+            <h4 style="margin-top: 0; color: #17a2b8;">{{ t.contact_title }}</h4>
+            <input type="text" id="contactSender" placeholder="{{ t.contact_sender }}">
+            <textarea id="contactMessage" rows="4" placeholder="{{ t.contact_msg }}"></textarea>
+            <button type="button" id="sendContactBtn" class="btn-start" style="width: 100%;">{{ t.contact_send }}</button>
+            <button type="button" id="cancelContactBtn" class="btn-stop" style="display:block; width: 100%;">{{ t.contact_cancel }}</button>
+            <div id="contactStatus" style="margin-top: 10px; text-align: center; font-weight: bold;"></div>
+        </div>
     </div>
     
-    <p>Vul de map in (bijv. 📁 /media of 📁 /media/Series) om te scannen en strippen ✨:</p>
+    <p>{{ t.desc }}</p>
     <form id="scanForm">
+        <input type="hidden" id="lang" name="lang" value="{{ lang }}">
         <input type="text" id="folder" name="folder" value="/media">
-        <button type="submit" id="startBtn" class="btn-start">▶️ Start Proces</button>
-        <button type="button" id="stopBtn" class="btn-stop">⏹️ Stop Proces</button>
+        <button type="submit" id="startBtn" class="btn-start">{{ t.start }}</button>
+        <button type="button" id="stopBtn" class="btn-stop">{{ t.stop }}</button>
     </form>
-    <h3>📺 Live Output:</h3>
-    <pre id="output">⏳ Wachten op actie...</pre>
+    
+    <h3>{{ t.live }}</h3>
+    <pre id="output">{{ t.wait }}</pre>
 
     <script>
         let controller;
 
-        document.getElementById('scanForm').onsubmit = async function(e) {
-            e.preventDefault();
-            const outputBox = document.getElementById('output');
-            outputBox.innerText = "🚀 Bezig met starten...\n";
+        // --- CONTACT LOGICA ---
+        document.getElementById('openContactBtn').onclick = () => {
+            document.getElementById('contactModal').style.display = 'block';
+            document.getElementById('openContactBtn').style.display = 'none';
+            document.getElementById('contactStatus').innerText = '';
+        };
+
+        document.getElementById('cancelContactBtn').onclick = () => {
+            document.getElementById('contactModal').style.display = 'none';
+            document.getElementById('openContactBtn').style.display = 'inline-block';
+        };
+
+        document.getElementById('sendContactBtn').onclick = async () => {
+            const sender = document.getElementById('contactSender').value;
+            const msg = document.getElementById('contactMessage').value;
             
-            document.getElementById('startBtn').style.display = 'none';
-            document.getElementById('stopBtn').style.display = 'inline-block';
+            if (!msg.trim()) return;
+
+            document.getElementById('sendContactBtn').disabled = true;
+            document.getElementById('contactStatus').innerText = '⏳...';
+            document.getElementById('contactStatus').style.color = 'white';
             
-            const formData = new FormData();
-            formData.append('folder', document.getElementById('folder').value);
-            
+            const fd = new FormData();
+            fd.append('sender', sender);
+            fd.append('message', msg);
+
+            try {
+                const res = await fetch('/contact', { method: 'POST', body: fd });
+                const data = await res.json();
+                if(data.status === 'success') {
+                    document.getElementById('contactStatus').innerText = '{{ t.contact_success }}';
+                    document.getElementById('contactStatus').style.color = '#28a745';
+                    document.getElementById('contactMessage').value = ''; 
+                    setTimeout(() => document.getElementById('cancelContactBtn').click(), 2000);
+                } else {
+                    document.getElementById('contactStatus').innerText = '{{ t.contact_error }}';
+                    document.getElementById('contactStatus').style.color = '#dc3545';
+                }
+            } catch(e) {
+                document.getElementById('contactStatus').innerText = '{{ t.contact_error }}';
+                document.getElementById('contactStatus').style.color = '#dc3545';
+            }
+            document.getElementById('sendContactBtn').disabled = false;
+        };
+
+        // --- SCAN LOGICA ---
+        async function startLogStream() {
+            if (controller) controller.abort();
             controller = new AbortController();
+            const outputBox = document.getElementById('output');
             
             try {
-                const response = await fetch('/start', { 
-                    method: 'POST', 
-                    body: formData,
-                    signal: controller.signal
-                });
+                const response = await fetch('/stream', { signal: controller.signal });
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 
                 while (true) {
                     const { done, value } = await reader.read();
-                    if (done) break;
-                    
+                    if (done) {
+                        document.getElementById('startBtn').style.display = 'inline-block';
+                        document.getElementById('stopBtn').style.display = 'none';
+                        break;
+                    }
                     outputBox.innerText += decoder.decode(value);
                     outputBox.scrollTop = outputBox.scrollHeight;
                 }
             } catch (err) {
-                if (err.name === 'AbortError') {
-                    outputBox.innerText += "\n🛑 [INFO] Proces handmatig gestopt.";
-                } else {
-                    outputBox.innerText += "\n⚠️ [FOUT] Verbinding verbroken.";
+                if (err.name !== 'AbortError') {
+                    outputBox.innerText += "\n{{ t.err }}";
                 }
-            } finally {
-                document.getElementById('startBtn').style.display = 'inline-block';
-                document.getElementById('stopBtn').style.display = 'none';
             }
+        }
+
+        window.onload = async function() {
+            try {
+                const res = await fetch('/status');
+                const data = await res.json();
+                if (data.running) {
+                    document.getElementById('startBtn').style.display = 'none';
+                    document.getElementById('stopBtn').style.display = 'inline-block';
+                    document.getElementById('output').innerText = "{{ t.recon }}\n";
+                } else {
+                    document.getElementById('output').innerText = "{{ t.hist }}\n";
+                }
+                startLogStream();
+            } catch(e) {}
+        };
+
+        document.getElementById('scanForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const outputBox = document.getElementById('output');
+            outputBox.innerText = "";
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'inline-block';
+            
+            const formData = new FormData();
+            formData.append('folder', document.getElementById('folder').value);
+            formData.append('lang', document.getElementById('lang').value);
+            
+            await fetch('/start', { method: 'POST', body: formData });
+            startLogStream();
         };
 
         document.getElementById('stopBtn').onclick = async function() {
-            const outputBox = document.getElementById('output');
-            outputBox.innerText += "\n🛑 [INFO] Stopprogramma geactiveerd, even geduld...\n";
+            const formData = new FormData();
+            formData.append('lang', document.getElementById('lang').value);
             
             if (controller) controller.abort();
-            
-            await fetch('/stop', { method: 'POST' });
+            await fetch('/stop', { method: 'POST', body: formData });
             
             document.getElementById('startBtn').style.display = 'inline-block';
             document.getElementById('stopBtn').style.display = 'none';
