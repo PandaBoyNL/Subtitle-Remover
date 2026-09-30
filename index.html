@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>SUB-GONE: Subtitle Remover</title>
+    <style>
+        body { background-color: #1e1e1e; color: #fff; font-family: Arial, sans-serif; padding: 20px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header img { max-width: 250px; border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        input, button { padding: 10px; margin-top: 10px; border-radius: 5px; border: none; font-size: 14px; }
+        input { width: 300px; }
+        .btn-start { background-color: #007bff; color: white; cursor: pointer; font-weight: bold; }
+        .btn-start:hover { background-color: #0056b3; }
+        .btn-stop { background-color: #dc3545; color: white; cursor: pointer; font-weight: bold; display: none; }
+        .btn-stop:hover { background-color: #c82333; }
+        pre { background: #333; padding: 15px; border-radius: 5px; overflow-y: auto; max-height: 500px; min-height: 100px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="SUB-GONE Logo">
+        <h2>SUB-GONE: Ingebakken Ondertiteling Verwijderen</h2>
+    </div>
+    
+    <p>Vul de map in (bijv. 📁 /media of 📁 /media/Series) om te scannen en strippen ✨:</p>
+    <form id="scanForm">
+        <input type="text" id="folder" name="folder" value="/media">
+        <button type="submit" id="startBtn" class="btn-start">▶️ Start Proces</button>
+        <button type="button" id="stopBtn" class="btn-stop">⏹️ Stop Proces</button>
+    </form>
+    <h3>📺 Live Output:</h3>
+    <pre id="output">⏳ Wachten op actie...</pre>
+
+    <script>
+        let controller;
+
+        document.getElementById('scanForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const outputBox = document.getElementById('output');
+            outputBox.innerText = "🚀 Bezig met starten...\n";
+            
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'inline-block';
+            
+            const formData = new FormData();
+            formData.append('folder', document.getElementById('folder').value);
+            
+            controller = new AbortController();
+            
+            try {
+                const response = await fetch('/start', { 
+                    method: 'POST', 
+                    body: formData,
+                    signal: controller.signal
+                });
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    outputBox.innerText += decoder.decode(value);
+                    outputBox.scrollTop = outputBox.scrollHeight;
+                }
+            } catch (err) {
+                if (err.name === 'AbortError') {
+                    outputBox.innerText += "\n🛑 [INFO] Proces handmatig gestopt.";
+                } else {
+                    outputBox.innerText += "\n⚠️ [FOUT] Verbinding verbroken.";
+                }
+            } finally {
+                document.getElementById('startBtn').style.display = 'inline-block';
+                document.getElementById('stopBtn').style.display = 'none';
+            }
+        };
+
+        document.getElementById('stopBtn').onclick = async function() {
+            const outputBox = document.getElementById('output');
+            outputBox.innerText += "\n🛑 [INFO] Stopprogramma geactiveerd, even geduld...\n";
+            
+            if (controller) controller.abort();
+            
+            await fetch('/stop', { method: 'POST' });
+            
+            document.getElementById('startBtn').style.display = 'inline-block';
+            document.getElementById('stopBtn').style.display = 'none';
+        };
+    </script>
+</body>
+</html>
