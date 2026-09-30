@@ -2,7 +2,7 @@
 trap '' PIPE
 
 SEARCH_DIR="${1:-/media}"
-WEBHOOK_URL="https://discord.com/api/webhooks/1554689534187274270/M-APr2bS8wpctXLd4H1Y8SKdq6JjMpdIU4d2MKqyB0Yr5EHpFrRyd3Pt8BDUaGzoz81h"
+WEBHOOK_URL="VUL_HIER_JE_WEBHOOK_URL_IN"
 
 echo "🔍 Zoeken naar mkv/mp4 video's in $SEARCH_DIR..."
 echo "---------------------------------------------------"
