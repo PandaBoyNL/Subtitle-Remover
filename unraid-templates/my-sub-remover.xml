@@ -15,14 +15,15 @@
   <Category>MediaApp:Video</Category>
   <WebUI>http://[IP]:[PORT:5000]/</WebUI>
   <TemplateURL/>
-  <Icon>http://192.168.178.88:5000/static/logo.png</Icon>
+  <Icon>https://raw.githubusercontent.com/PandaBoyNL/Subtitle-Remover/refs/heads/main/logo.png</Icon>
   <ExtraParams/>
   <PostArgs/>
   <CPUset/>
-  <DateInstalled>1790739604</DateInstalled>
+  <DateInstalled>1790742221</DateInstalled>
   <DonateText/>
   <DonateLink/>
   <Requires/>
+  <Config Name="Discord Webhook URL" Target="DISCORD_WEBHOOK" Default="" Mode="" Description="Optioneel: Vul je Discord Webhook URL in om een melding te krijgen als het strippen klaar is." Type="Variable" Display="always" Required="false" Mask="false">https://discord.com/api/webhooks/1554689534187274270/M-APr2bS8wpctXLd4H1Y8SKdq6JjMpdIU4d2MKqyB0Yr5EHpFrRyd3Pt8BDUaGzoz81h</Config>
   <Config Name="Media Map" Target="/media" Default="/mnt/user/media/" Mode="rw" Description="De hoofdmap waar je films of series staan." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/media/</Config>
   <Config Name="WebUI Port" Target="5000" Default="5000" Mode="tcp" Description="Poort voor de webinterface" Type="Port" Display="always" Required="true" Mask="false">5050</Config>
   <TailscaleStateDir/>
