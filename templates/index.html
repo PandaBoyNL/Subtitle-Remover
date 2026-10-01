@@ -18,15 +18,12 @@
         .btn-stop:hover { background-color: #c82333; }
         
         /* Contact Knop Styling */
-        .btn-contact { background-color: #17a2b8; color: white; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
+        .btn-contact { background-color: #17a2b8; color: white; cursor: pointer; font-weight: bold; margin-bottom: 10px; text-decoration: none; display: inline-block; padding: 10px 15px; border-radius: 5px; }
         .btn-contact:hover { background-color: #138496; }
-        
+
         /* Donatie Knop Styling */
         .btn-donate { background-color: #ffc107; color: #212529; cursor: pointer; font-weight: bold; margin-bottom: 10px; margin-left: 10px; text-decoration: none; display: inline-block; padding: 10px 15px; border-radius: 5px; }
         .btn-donate:hover { background-color: #e0a800; color: #111; }
-        
-        .contact-box { background: #2a2a2a; padding: 20px; border-radius: 8px; border: 1px solid #444; max-width: 500px; margin: 0 auto 20px auto; display: none; text-align: left; }
-        .contact-box input, .contact-box textarea { width: 100%; box-sizing: border-box; background: #333; color: white; border: 1px solid #555; padding: 10px; margin-bottom: 10px; border-radius: 4px; font-family: inherit;}
         
         pre { background: #333; padding: 15px; border-radius: 5px; overflow-y: auto; max-height: 500px; min-height: 100px; white-space: pre-wrap; }
     </style>
@@ -38,17 +35,8 @@
         
         <!-- Knoppen Sectie -->
         <div style="margin-bottom: 15px;">
-            <button type="button" id="openContactBtn" class="btn-contact">{{ t.contact_btn }}</button>
+            <a href="https://pandaboynl-support-page.duckdns.org" target="_blank" class="btn-contact">{{ t.contact_btn }}</a>
             <a href="https://www.paypal.com/paypalme/PandaBoyNL" target="_blank" class="btn-donate">👉 Buy me a coffee ☕</a>
-        </div>
-        
-        <div id="contactModal" class="contact-box">
-            <h4 style="margin-top: 0; color: #17a2b8;">{{ t.contact_title }}</h4>
-            <input type="text" id="contactSender" placeholder="{{ t.contact_sender }}">
-            <textarea id="contactMessage" rows="4" placeholder="{{ t.contact_msg }}"></textarea>
-            <button type="button" id="sendContactBtn" class="btn-start" style="width: 100%;">{{ t.contact_send }}</button>
-            <button type="button" id="cancelContactBtn" class="btn-stop" style="display:block; width: 100%;">{{ t.contact_cancel }}</button>
-            <div id="contactStatus" style="margin-top: 10px; text-align: center; font-weight: bold;"></div>
         </div>
     </div>
     
@@ -65,51 +53,6 @@
 
     <script>
         let controller;
-
-        // --- CONTACT LOGICA ---
-        document.getElementById('openContactBtn').onclick = () => {
-            document.getElementById('contactModal').style.display = 'block';
-            document.getElementById('openContactBtn').style.display = 'none';
-            document.getElementById('contactStatus').innerText = '';
-        };
-
-        document.getElementById('cancelContactBtn').onclick = () => {
-            document.getElementById('contactModal').style.display = 'none';
-            document.getElementById('openContactBtn').style.display = 'inline-block';
-        };
-
-        document.getElementById('sendContactBtn').onclick = async () => {
-            const sender = document.getElementById('contactSender').value;
-            const msg = document.getElementById('contactMessage').value;
-            
-            if (!msg.trim()) return;
-
-            document.getElementById('sendContactBtn').disabled = true;
-            document.getElementById('contactStatus').innerText = '⏳...';
-            document.getElementById('contactStatus').style.color = 'white';
-            
-            const fd = new FormData();
-            fd.append('sender', sender);
-            fd.append('message', msg);
-
-            try {
-                const res = await fetch('/contact', { method: 'POST', body: fd });
-                const data = await res.json();
-                if(data.status === 'success') {
-                    document.getElementById('contactStatus').innerText = '{{ t.contact_success }}';
-                    document.getElementById('contactStatus').style.color = '#28a745';
-                    document.getElementById('contactMessage').value = ''; 
-                    setTimeout(() => document.getElementById('cancelContactBtn').click(), 2000);
-                } else {
-                    document.getElementById('contactStatus').innerText = '{{ t.contact_error }}';
-                    document.getElementById('contactStatus').style.color = '#dc3545';
-                }
-            } catch(e) {
-                document.getElementById('contactStatus').innerText = '{{ t.contact_error }}';
-                document.getElementById('contactStatus').style.color = '#dc3545';
-            }
-            document.getElementById('sendContactBtn').disabled = false;
-        };
 
         // --- SCAN LOGICA ---
         async function startLogStream() {
