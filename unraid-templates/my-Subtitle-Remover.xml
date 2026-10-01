@@ -15,7 +15,7 @@
   <Category>MediaApp:Video</Category>
   <WebUI>http://192.168.178.88:5050/</WebUI>
   <TemplateURL/>
-  <Icon>https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/ffmpeg-logo.png</Icon>
+  <Icon>https://raw.githubusercontent.com/PandaBoyNL/Subtitle-Remover/refs/heads/main/logo.png</Icon>
   <ExtraParams/>
   <PostArgs/>
   <CPUset/>
