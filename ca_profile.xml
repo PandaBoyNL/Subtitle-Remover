@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>Subtitle-Remover</Name>
+  <Repository>pandaboynl/subtitle-remover:latest</Repository>
+  <Registry>https://hub.docker.com/r/pandaboynl/subtitle-remover</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <MyMAC/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://pandaboynl-s-windows-exe-en-unraid-docker-support.geminilaunch.com</Support>
+  <Project>https://github.com/PandaBoyNL/Subtitle-Remover</Project>
+  <ReadMe>https://github.com/PandaBoyNL/Subtitle-Remover/blob/main/README.md</ReadMe>
+  <Overview>
+    SUB-GONE (Subtitle-Remover) is een lichtgewicht Docker container met een ingebouwde WebUI om ingebakken ondertiteling uit .mkv en .mp4 media te strippen zonder re-encoding.
+    
+    Kenmerken:
+    - Webinterface met live log stream voor makkelijke bediening.
+    - Behoudt originele videokwaliteit (FFmpeg video/audio copy).
+    - Optionele Discord notificaties via Webhooks bij voortgang en voltooiing.
+    - Volledig meertalig (Nederlands en Engels).
+  </Overview>
+  <Category>MediaApp:Video;Tools:Utilities;</Category>
+  <WebUI>http://[IP]:[PORT:5000]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/PandaBoyNL/Subtitle-Remover/main/Subtitle-Remover.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/PandaBoyNL/Subtitle-Remover/refs/heads/main/logo.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled></DateInstalled>
+  <DonateText>Buy me a coffee ☕</DonateText>
+  <DonateLink>https://www.paypal.com/paypalme/PandaBoyNL</DonateLink>
+  <Requires/>
+  
+  <Config Name="Media Map" Target="/media" Default="/mnt/user/media/" Mode="rw" Description="De hoofdmap waar je films of series staan. Let op: mappen met namen zoals 'Featurettes', 'Extras' of 'Trailers' worden automatisch overgeslagen." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/media/</Config>
+  
+  <Config Name="Discord Webhook URL" Target="DISCORD_WEBHOOK" Default="" Mode="" Description="Optioneel: Vul je Discord Webhook URL in om status updates (per 100 bestanden) en een eindmelding te krijgen in Discord." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+  
+  <Config Name="WebUI Port" Target="5000" Default="5050" Mode="tcp" Description="Poort voor de Flask webinterface van SUB-GONE." Type="Port" Display="always" Required="true" Mask="false">5050</Config>
+</Container>
