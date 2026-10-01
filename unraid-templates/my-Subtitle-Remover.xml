@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>Subtitle-Remover</Name>
+  <Repository>pandaboynl/subtitle-remover:latest</Repository>
+  <Registry/>
+  <Network>bridge</Network>
+  <MyIP/>
+  <MyMAC/>
+  <Shell>bash</Shell>
+  <Privileged>false</Privileged>
+  <Support/>
+  <Project/>
+  <ReadMe/>
+  <Overview>Lichtgewicht container met FFmpeg om ingebakken ondertiteling uit media te strippen zonder re-encoding. Voer uit via de Unraid terminal.</Overview>
+  <Category>MediaApp:Video</Category>
+  <WebUI>http://192.168.178.88:5050/</WebUI>
+  <TemplateURL/>
+  <Icon>https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/ffmpeg-logo.png</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled>1790863812</DateInstalled>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+  <Config Name="Media Map" Target="/media" Default="/mnt/user/media/" Mode="rw" Description="De hoofdmap waar je films of series staan." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/media/</Config>
+  <Config Name="Discord Webhook URL" Target="DISCORD_WEBHOOK" Default="" Mode="" Description="Optioneel: Vul je Discord Webhook URL in om een melding te krijgen als het strippen klaar is." Type="Variable" Display="always" Required="false" Mask="false">https://discord.com/api/webhooks/1555217948493353002/x300zwbYexOR-bMpXP2OkncnwCmtb87aS-d3SgTSNUzmN0p9rP5ElO8IkIjX06vG-d80</Config>
+  <Config Name="WebUI Port" Target="5000" Default="5000" Mode="tcp" Description="Poort voor de webinterface" Type="Port" Display="always" Required="true" Mask="false">5050</Config>
+  <TailscaleStateDir/>
+</Container>
