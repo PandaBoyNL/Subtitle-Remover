@@ -24,7 +24,7 @@
   <DonateLink/>
   <Requires/>
   <Config Name="Media Map" Target="/media" Default="/mnt/user/media/" Mode="rw" Description="De hoofdmap waar je films of series staan." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/media/</Config>
-  <Config Name="Discord Webhook URL" Target="DISCORD_WEBHOOK" Default="" Mode="" Description="Optioneel: Vul je Discord Webhook URL in om een melding te krijgen als het strippen klaar is." Type="Variable" Display="always" Required="false" Mask="false">https://discord.com/api/webhooks/1555217948493353002/x300zwbYexOR-bMpXP2OkncnwCmtb87aS-d3SgTSNUzmN0p9rP5ElO8IkIjX06vG-d80</Config>
+  <Config Name="Discord Webhook URL" Target="DISCORD_WEBHOOK" Default="" Mode="" Description="Optioneel: Vul je Discord Webhook URL in om een melding te krijgen als het strippen klaar is." Type="Variable" Display="always" Required="false" Mask="false"></Config>
   <Config Name="WebUI Port" Target="5000" Default="5000" Mode="tcp" Description="Poort voor de webinterface" Type="Port" Display="always" Required="true" Mask="false">5050</Config>
   <TailscaleStateDir/>
 </Container>
